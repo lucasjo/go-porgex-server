@@ -9,14 +9,14 @@ development:
   port: :3001
   host : 127.0.0.1
  daemon:
-  hash: porgex-server daemon
+  hash: porgex-server-daemon
   command: start
   maxfds:
    cur: 32677
    max: 32677
-  user: porgex
-  group: porgex
-  logfile:porgex-server-daemon.logfile
+  user: kikimans
+  group: kikimans
+  logfile: porgex-server-daemon.log
   directives:
    network: tcp
    address: 127.0.0.1:3001

@@ -1,34 +1,46 @@
 package util
 
 import (
-	"os"
+	"fmt"
+	"log"
+	"os/user"
 	"path"
 	"syscall"
 
+	gozd "github.com/lucasjo/zero-downtime-daemon"
 	"github.com/olebedev/config"
-	gozd "github.com/tomasen/zero-downtime-daemon"
 )
 
 //zero-downtime-daemon context setting
 func GetContext(cfg *config.Config, cmd string) gozd.Context {
 
-	hash := cfg.UString("development.daemon.hash", "porgex-server-tcp-daemon")
-	var command string
+	log.Println("porgex server exec : ", cmd)
 
-	if cmd != nil {
+	hash := cfg.UString("development.daemon.hash", "porgex-server-tcp-daemon")
+
+	var command = ""
+
+	if cmd != "" {
 		command = cmd
 	} else {
 		command = cfg.UString("development.daemon.command", "start")
 	}
 
-	maxfds := syscall.Rlimit{Cur: 32677, Max: 32677}
+	maxfds := syscall.Rlimit{Cur: 1000, Max: 1000}
 
-	user := cfg.UString("development.daemon.user", "porgex")
+	userNm := cfg.UString("development.daemon.user", "porgex")
 	group := cfg.UString("development.daemon.group", "porgex")
 
 	//logfile setting
 	logfile := cfg.UString("development.daemon.logfile", "porgex-server-daemon.log")
-	logfile = path.Join(os.TempDir(), logfile)
+
+	usr, err := user.Current()
+
+	if err != nil {
+		fmt.Println("err: ", err)
+	}
+
+	logfile = path.Join(usr.HomeDir, "logs", logfile)
 
 	directives := make(map[string]gozd.Server)
 
@@ -44,7 +56,7 @@ func GetContext(cfg *config.Config, cmd string) gozd.Context {
 		Hash:       hash,
 		Command:    command,
 		Maxfds:     maxfds,
-		User:       user,
+		User:       userNm,
 		Group:      group,
 		Logfile:    logfile,
 		Directives: directives,

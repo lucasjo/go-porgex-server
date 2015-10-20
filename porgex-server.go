@@ -19,7 +19,7 @@ import (
 	lconfig "github.com/lucasjo/go-porgex-server/config"
 	"github.com/lucasjo/go-porgex-server/db"
 	"github.com/lucasjo/go-porgex-server/util"
-	gozd "github.com/tomasen/zero-downtime-daemon"
+	gozd "github.com/lucasjo/zero-downtime-daemon"
 )
 
 var (
@@ -33,6 +33,7 @@ var (
 	configPtr = flag.String("config", "", "config option root directory filename or filepath")
 
 	configpath = ""
+	sg         = ""
 )
 
 var message = make(chan interface{})
@@ -61,7 +62,7 @@ func saveData(v interface{}) {
 	log.Printf("Usage Data Insert : %v, %v\n", reflect.TypeOf(v), v)
 }
 
-func handlerConnection() {
+func handlerConnection(conn net.Conn) {
 
 	for {
 		go func(conn net.Conn) {
@@ -108,7 +109,7 @@ func handlerConnection() {
 
 func serverTcp(cl chan net.Listener) {
 	for v := range cl {
-
+		defer v.Close()
 		go func(l net.Listener) {
 			log.Println("porgex-server-listener : ", reflect.ValueOf(l).Elem().FieldByName("Name").String())
 
@@ -133,10 +134,11 @@ func main() {
 	flag.Parse()
 
 	configpath = *configPtr
+	sg = *signal
 
 	if configpath == "" {
 		dir, _ := os.Getwd()
-		configpath = strings.Join([]string{dir, "porgex-server.yaml"}, "/")
+		configpath = strings.Join([]string{dir, "porgex_server.yaml"}, "/")
 	} else {
 		if !util.Exists(configpath) {
 			fmt.Printf("no such file or directory %s\n", configpath)
@@ -146,7 +148,7 @@ func main() {
 
 	cfg := lconfig.GetConfig(configpath)
 
-	cntxt := util.GetContext(cfg, *signal)
+	cntxt := util.GetContext(cfg, sg)
 
 	cl := make(chan net.Listener, 1)
 
@@ -167,6 +169,8 @@ func main() {
 
 		case syscall.SIGTERM:
 			log.Println("Porgex Server Stop ", time.Now())
+			cli := <-cl
+			cli.Close()
 		}
 	}
 

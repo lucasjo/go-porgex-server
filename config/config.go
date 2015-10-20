@@ -8,7 +8,7 @@ import (
 	"github.com/olebedev/config"
 )
 
-const ConfigName = "porgex-server.yaml"
+const ConfigName = "porgex_server.yaml"
 
 var configpath string
 
