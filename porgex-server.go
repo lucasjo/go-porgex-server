@@ -15,9 +15,9 @@ import (
 
 	"gopkg.in/mgo.v2"
 
-	"github.com/lucasjo/go-porgex-node/models"
 	lconfig "github.com/lucasjo/go-porgex-server/config"
 	"github.com/lucasjo/go-porgex-server/db"
+	"github.com/lucasjo/go-porgex-server/models"
 	"github.com/lucasjo/go-porgex-server/util"
 	gozd "github.com/lucasjo/zero-downtime-daemon"
 )
