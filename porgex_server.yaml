@@ -14,9 +14,9 @@ development:
   maxfds:
    cur: 32677
    max: 32677
-  user: kikimans
-  group: kikimans
+  user: root
+  group: root
   logfile: porgex-server-daemon.log
   directives:
    network: tcp
-   address: 127.0.0.1:3001
+   address: :3001
