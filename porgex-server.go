@@ -65,6 +65,12 @@ func saveData(v interface{}) {
 func handlerConnection(conn net.Conn) {
 
 	for {
+
+		err := conn.SetWriteDeadline(time.Now().Add(time.Second * 10))
+
+		if err != nil {
+			fmt.Printf("SetWriteDeadline failed: %v\n", err)
+		}
 		go func(conn net.Conn) {
 			var req models.Request
 			dec := json.NewDecoder(bufio.NewReader(conn))
