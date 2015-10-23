@@ -34,13 +34,17 @@ var (
 
 	configpath = ""
 	sg         = ""
+
+	mdb *Connect
 )
 
 var message = make(chan interface{})
 
 func saveData(v interface{}) {
 
-	dbc := db.New(lconfig.GetConfig(configpath))
+	if mdb == nil {
+		mdb = db.New(lconfig.GetConfig(configpath))
+	}
 
 	collections := db.GetColl(dbc)
 
@@ -155,6 +159,8 @@ func main() {
 	cfg := lconfig.GetConfig(configpath)
 
 	cntxt := util.GetContext(cfg, sg)
+
+	mdb = db.New(lconfig.GetConfig(configpath))
 
 	cl := make(chan net.Listener, 1)
 

@@ -33,7 +33,9 @@ func New(cfg *config.Config) *Connect {
 	mSession, err := mgo.DialWithInfo(mInfo)
 
 	if err != nil {
+		log.Fatalf("mongo db dial connection error : ", err)
 		panic(err)
+
 	}
 
 	defer mSession.Close()
