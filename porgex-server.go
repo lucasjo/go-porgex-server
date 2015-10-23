@@ -35,7 +35,7 @@ var (
 	configpath = ""
 	sg         = ""
 
-	mdb *Connect
+	mdb *db.Connect
 )
 
 var message = make(chan interface{})
