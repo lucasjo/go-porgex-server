@@ -46,7 +46,7 @@ func saveData(v interface{}) {
 		mdb = db.New(lconfig.GetConfig(configpath))
 	}
 
-	collections := db.GetColl(dbc)
+	collections := db.GetColl(mdb)
 
 	var collection *mgo.Collection
 
