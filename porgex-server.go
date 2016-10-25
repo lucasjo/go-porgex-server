@@ -34,7 +34,7 @@ var (
 
 	configpath = ""
 	sg         = ""
-
+	sg1         = ""
 	mdb *db.Connect
 )
 
@@ -142,7 +142,7 @@ func serverTcp(cl chan net.Listener) {
 func main() {
 
 	flag.Parse()
-
+	a:""
 	configpath = *configPtr
 	sg = *signal
 
